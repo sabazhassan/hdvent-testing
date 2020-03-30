@@ -6,15 +6,15 @@ Create a folder with a meaningful name and put your code snippets and a README (
 
 ## Basic TODOS
 - Motor
-..- test stepper motor driver X-NUCLEO-IHM02A1 with small stepper motors (Esteban, David)
-..- test optical encoder
-..- code motor functions for ventilator control script
+  - test stepper motor driver X-NUCLEO-IHM02A1 with small stepper motors (Esteban, David)
+  - test optical encoder
+  - code motor functions for ventilator control script
 
 - Pressure sensor
-..- select and order (?) pressure sensor
-..- test pressure sensor
-..- code read_pressure() function
+  - select and order (?) pressure sensor
+  - test pressure sensor
+  - code read_pressure() function
 
 - Pinout
-..- decide preliminary arduino pinout
+  - decide preliminary arduino pinout
 
