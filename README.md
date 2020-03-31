@@ -7,6 +7,7 @@ Create a folder with a meaningful name and put your code snippets and a README (
 ## Basic TODOS
 - Motor
   - test stepper motor driver X-NUCLEO-IHM02A1 with small stepper motors (Esteban, David)
+  - ~test stepper motor driver X-NUCLEO-IHM02A1 with large stepper motors (Esteban, David)~
   - test optical encoder
   - code motor functions for ventilator control script
 
