@@ -14,7 +14,7 @@
  *
  ***********************************************/
 
-
+#include <Arduino.h>
 #include <SparkFunAutoDriver.h>
 #include <SPI.h>
 
