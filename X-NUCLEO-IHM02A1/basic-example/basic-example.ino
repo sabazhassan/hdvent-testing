@@ -65,10 +65,6 @@ void loop()
     if (Serial.available())
     {
         rxChar = Serial.read();
-        // This switch statement handles the various cases that may come from the host via the serial port.
-        //  Do note that not all terminal programs will encode e.g. Page Up as 0x0B. I'm using CoolTerm
-        //  in Windows and this is what CoolTerm sends when I strike these respective keys.
-        //  only Stepper control (one motor) is implemented here as example
         switch(rxChar)
         {
             case 'x':  // x Arrow : speed 0
