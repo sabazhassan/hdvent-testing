@@ -128,3 +128,36 @@ If the respirators are connected to a PC for monitoring, they should not be conn
 All registers and external actuations should be rewritten in their entirety regularly, because we cannot assume external systems have not been reset or changed (due to glitches) without us knowing. This includes the LCD interface.
 
 These concepts should not be too hard to implement and should greatly enhance the reliability and the safety of the system. Hope this helps !
+
+
+
+
+Further considerations, and a few opinions (welcome to argue :)) :
+
+Nowadays there are much more powerful microcontrollers at the same price. ESP32 has been cited, ESP8266 too, but also ARM Cortex-M0/M3 microcontrollers. Here are my thoughts.
+
+==> This is not the time for a technology show-off. It is time to use well proven and simple technologies. The Apollo AGC had 2K RAM and 32K ROM, less than an ATmega328, the microcontroller of an Arduino Uno. I think we can control a respirator with this 🙂
+
+- The ATmega328 will come with restrictions. Namely, no OS, and limited capabilities (no networking), when compared with solutions such as ESP8266/ESP32. However, these solutions come with a big chunk of software of unknown quality and reliability, and which is closed source (!!!), whereas the ATmega328 is much more bare-bones and can be controlled fully and is well understood.
+
+The less code there is, the less bugs there can be.
+
+I believe this project should be closer to a state machine / PLC, rather than a computer, for reliability reasons.
+Would you rather trust your life to a well-programmed ATmega328 running a simple program, or to a computer with an OS of unknown quality ?
+
+An option would be using an ESP32/ESP8266 without its OS, but what’s the point, and also these micros have no practically no analog capabilities. As to an ARM solution, why not, totally, but again, I would stay away from complex OSes and libraries and stay low level.
+
+I would like to explain why I suggest a 2×16 LCD. It is tempting to use graphical LCDs, but they require more internal memory (character font tables, more drivers) and I am afraid we may run short on the Arduino. So I believe the character LCDs should be a good compromise for this project given its requirements. It is possible to move to a 4×20 LCD to get more screen real estate if needed. Also, these character LCDs are available everywhere, and are possibly easier to find than the I2C 7-segment LED display originally planed (which also presents ergonomic problems which I already explained).
+
+- I do not believe the lack of a true OS is a problem. In fact, I believe it has some merit as it will force writing reliable code (no thinking “it is OK if my task hangs as other tasks will be unaffected”). It is possible to implement a simple cooperative multitasking OS. In that case all tasks MUST be non-blocking by design. It is perfectly do-able but this must be done from the beginning.
+If I were to be connected to a machine controlled by this, I would prefer a simple cooperative multitasking OS with simple tasks with well defined behavior, rather than a complex OS with multitasking, dynamic allocation, lots of drivers and a lot of things that can go wrong. Wouldn’t you ?
+
+- Each task can be a state machine that is ran in turn. Every time it is ran, it looks at its inputs and current state, and changes its output and current state as required. That’s it. We can allocate a decide a maximum time for each task, and we can then guarantee by the code that the task will never exceed that allocated time (by ensuring everything it calls executes within a certain time - no while(…) without a timeout !). Them, realtime operations can be performed in interrupts (with only simple, time-critical code in interrupts, and no complex library calls). Finally, communication between tasks and interrupts can be done with variables, being very careful with synchronisation (cli/sti).
+
+A system like this can have a very well defined behavior which is what we want here. It is possible to do a graph showing all execution paths. If a reliability analysis is ever to be done, it will be so much simpler, rather than calling OS API calls which end up in a binary blob we can’t analyse.
+
+The watchdog timer can be used to enforce non-blocking tasks. It would be kicked in the main loop, when all tasks have been executed. If any task is stuck, system will reset.
+
+- Many common Arduino libraries are not production quality and even less medical quality. A lot have poor error handling and can readily crash or hang. Many of them do not have timeouts or retrying. To guarantee non-blocking operation, it is possible that a lot of the common libraries would have to be rewritten, which is why it is important to stay away from complex peripherals (graphical LCDs…) to limit the amount of software engineering required to the least minimum.
+
+Hope this helps.
