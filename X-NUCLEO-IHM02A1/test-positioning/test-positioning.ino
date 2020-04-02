@@ -33,6 +33,8 @@ void UpdateMotorCurveParameters(float respiratoryRate, float pathRatio, float IE
 void PrintMotorCurveParameters();
 bool isBusy();
 
+int const stepDividerConstant = STEP_FS_8;
+int const stepDivider = 8;
 // motor curve for volume control operation
 // inspiratory phase
 float const ACC_IN = 200; // steps/s/s
@@ -42,7 +44,7 @@ float timeIn=1;
 
 // hold time after inspiratory phase
 float const TIME_HOLD_PLATEAU = 0.200; // seconds
-int const stepDivider = STEP_FS_4;
+
 
 
 // exspiratory phase
@@ -54,8 +56,8 @@ float timeEx=1;
 //float time_hold_ex = 4; // seconds
 
 //
-unsigned int stepsFullRange = 100*4;
-unsigned int stepsInterval = 100*4;
+unsigned int stepsFullRange = 100;
+unsigned int stepsInterval = 100;
 
 // user-set parameters (later by poti)
 float respiratoryRate = 15;
@@ -117,7 +119,7 @@ void UpdateMotorCurveParameters(float respiratoryRate, float pathRatio, float IE
     if (discriminant > 0) {
         speedIn = (-timeIn + sqrtf(discriminant)) / -(1. / ACC_IN + 1. / DEC_IN);
         //time_hold_ex =  timeEx - ((1. / ACC_EX + 1. / DEC_EX)*sq(SPEED_EX)/2 + steps)/SPEED_EX;
-        stepsInterval = steps;
+        stepsInterval = steps*stepDivider;
     }
 }
 
@@ -208,14 +210,14 @@ void ConfigureBoards()
     //  This lets us hammer the motor harder during some phases  than others, and to use a higher voltage to achieve better
     //  torqure performance even if a motor isn't rated for such a high current.
     // This IHM02A1 BOARD has 12V motors and a 12V supply.
-    boardIndex->setRunKVAL(240);  // 220/255 * 12V = 6V
+    boardIndex->setRunKVAL(255);  // 220/255 * 12V = 6V
     boardIndex->setAccKVAL(240);  // 220/255 * 12V = 6V
-    boardIndex->setDecKVAL(240);  // /255 * 12V = 3V
-    boardIndex->setHoldKVAL(180);  // 132/255 * 12V = 1.5V  // low voltage, almost free turn
+    boardIndex->setDecKVAL(255);  // /255 * 12V = 3V
+    boardIndex->setHoldKVAL(190);  // 132/255 * 12V = 1.5V  // low voltage, almost free turn
 
     // The dSPIN chip supports microstepping for a smoother ride. This function provides an easy front end for changing the microstepping mode.
     // once in full speed, it will step up to half-step
-    boardIndex->configStepMode(stepDivider); // Full step
+    boardIndex->configStepMode(stepDividerConstant); // Full step
 
     // When a move command is issued, max speed is the speed the Motor tops out at while completing the move, in steps/s
     boardIndex->setMaxSpeed(100);
