@@ -42,7 +42,7 @@ float t_in=1;
 // hold time after inspiratory phase
 float time_hold_plateau = 0.200; // seconds
 
-// exspiratory phase
+// expiratory phase
 float acc_ex = 300; // steps/s/s
 float speed_ex = 100; //steps/s
 float dec_ex = 300; // steps/s/s
