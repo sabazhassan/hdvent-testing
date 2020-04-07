@@ -13,7 +13,7 @@ Create a folder with a meaningful name and put your code snippets and a README (
 
 - Pressure sensor
   - ~select and order (?) pressure sensor~
-  - test pressure sensor (Gunnar)
+  - test pressure sensor (Saba)
   - code read_pressure() function 
 
 - Pinout
